@@ -187,7 +187,7 @@ const InvoiceGenerator = () => {
     const fetchInvoices = async () => {
       try {
         setLoading(true);
-        const url = import.meta.env.VITE_SERVER;
+        const url = import.meta.env.VITE_SERVER; // Ensure this is set
         const response = await fetch(`${url}/api/invoices`);
         if (!response.ok) {
           throw new Error('Failed to fetch invoices');
@@ -195,12 +195,16 @@ const InvoiceGenerator = () => {
         const data = await response.json();
         setInvoices(data);
       } catch (err) {
-        setError(err.message || 'Something went wrong');
+        if (err instanceof Error) {
+          setError(err.message); // Access the message property safely
+        } else {
+          setError('An unexpected error occurred');
+        }
       } finally {
         setLoading(false);
       }
     };
-
+  
     fetchInvoices();
   }, []);
 
